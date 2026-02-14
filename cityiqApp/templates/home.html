@@ -1,0 +1,719 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityIQ | Smart City Guide for Kolhapur</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Markdown Parser for AI Responses -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-blue': '#3B82F6',
+                        'primary-purple': '#9333EA',
+                        'dark-bg': '#0F172A',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0F172A;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(147, 51, 234, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: white;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: #3B82F6;
+            position: relative;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3B82F6;
+            box-shadow: 0 0 10px #3B82F6;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0F172A; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 40px -10px rgba(59, 130, 246, 0.15);
+        }
+
+        .prose strong { color: #60A5FA; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; }
+        .prose li { margin-bottom: 0.25rem; }
+        .prose p { margin-bottom: 0.75rem; }
+        .prose h3 { font-size: 1.1em; font-weight: 700; margin-top: 1rem; color: #fff; }
+        
+        .user-dropdown {
+            display: none;
+        }
+        .user-dropdown.show {
+            display: block;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('home')">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-building-user text-white text-xs"></i>
+                </div>
+                <span class="font-display font-bold text-xl tracking-tight">City<span class="text-blue-400">IQ</span></span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <button onclick="showSection('home')" class="nav-link active hover:text-white transition-colors" data-target="home">Home</button>
+                <button onclick="showSection('destinations')" class="nav-link hover:text-white transition-colors" data-target="destinations">Destinations</button>
+                <button onclick="showSection('hotels')" class="nav-link hover:text-white transition-colors" data-target="hotels">Stays & Food</button>
+                <button onclick="showSection('updates')" class="nav-link hover:text-white transition-colors" data-target="updates">Updates</button>
+                <button onclick="showSection('guide')" class="px-5 py-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transform hover:scale-105 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-sparkles"></i> AI Guide
+                </button>
+                
+                <!-- User Menu -->
+                <div class="relative">
+                    <button onclick="toggleUserMenu()" class="flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-xs font-bold">
+                            {{ user.first_name.0 }}{{ user.last_name.0 }}
+                        </div>
+                        <span class="text-sm">{{ user.first_name }}</span>
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="user-dropdown" class="user-dropdown absolute right-0 mt-2 w-48 glass-panel rounded-xl py-2 shadow-xl">
+                        <div class="px-4 py-2 border-b border-white/10">
+                            <p class="font-semibold text-sm">{{ user.get_full_name }}</p>
+                            <p class="text-xs text-slate-400">{{ user.email }}</p>
+                        </div>
+                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm hover:bg-white/5 transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white text-xl" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute w-full glass-nav border-b border-white/10 p-4 flex flex-col gap-4">
+            <div class="flex items-center gap-2 px-2 py-2 border-b border-white/10">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-sm font-bold">
+                    {{ user.first_name.0 }}{{ user.last_name.0 }}
+                </div>
+                <div>
+                    <p class="text-sm font-semibold">{{ user.get_full_name }}</p>
+                    <p class="text-xs text-slate-400">{{ user.email }}</p>
+                </div>
+            </div>
+            <button onclick="showSection('home'); toggleMobileMenu()" class="text-left py-2 px-2 hover:bg-white/5 rounded">Home</button>
+            <button onclick="showSection('destinations'); toggleMobileMenu()" class="text-left py-2 px-2 hover:bg-white/5 rounded">Destinations</button>
+            <button onclick="showSection('hotels'); toggleMobileMenu()" class="text-left py-2 px-2 hover:bg-white/5 rounded">Stays & Food</button>
+            <button onclick="showSection('updates'); toggleMobileMenu()" class="text-left py-2 px-2 hover:bg-white/5 rounded">Updates</button>
+            <button onclick="showSection('guide'); toggleMobileMenu()" class="text-left py-2 px-2 text-blue-400 font-bold">Ask AI Guide</button>
+            <a href="{% url 'logout' %}" class="text-left py-2 px-2 hover:bg-white/5 rounded text-red-400">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="pt-20 flex-grow relative">
+        
+        <!-- SECTION: HOME -->
+        <section id="home" class="page-section min-h-[calc(100vh-80px)] flex flex-col items-center justify-center px-4 relative">
+            <div class="absolute top-20 left-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+            <div class="absolute bottom-20 right-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+
+            <div class="text-center max-w-4xl z-10 animate-slide-up">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium tracking-wider text-blue-400 mb-6 backdrop-blur-sm">
+                    ✨ AI-POWERED CITY INTELLIGENCE
+                </div>
+                <h1 class="font-display text-5xl md:text-7xl font-bold leading-tight mb-6 text-glow">
+                    Explore Kolhapur <br/> with <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">City Intelligence</span>
+                </h1>
+                <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+                    Your smart digital companion for history, culture, famous cuisine, and travel directions. Powered by Google Gemini AI.
+                </p>
+
+                <!-- AI Search Bar -->
+                <div class="relative max-w-xl mx-auto mb-16 group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative flex items-center bg-slate-900 border border-white/10 rounded-2xl p-2 shadow-2xl">
+                        <input type="text" id="hero-search" placeholder="Ask AI: Best time to visit Rankala? or Famous Misal spots..." 
+                            class="w-full bg-transparent text-white placeholder-slate-500 px-4 py-3 outline-none focus:ring-0"
+                            onkeypress="handleHeroEnter(event)">
+                        <button onclick="heroSearch()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all transform hover:scale-105">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl mx-auto">
+                    <div class="glass-panel p-4 rounded-xl flex items-center gap-3 card-hover animate-float" style="animation-delay: 0s;">
+                        <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                            <i class="fa-solid fa-temperature-half"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-slate-400">Temperature</p>
+                            <p class="font-bold text-lg">28°C</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl flex items-center gap-3 card-hover animate-float" style="animation-delay: 1s;">
+                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                            <i class="fa-solid fa-wind"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-slate-400">AQI (Good)</p>
+                            <p class="font-bold text-lg">65</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl flex items-center gap-3 card-hover animate-float" style="animation-delay: 2s;">
+                        <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                            <i class="fa-solid fa-landmark"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-slate-400">Founded</p>
+                            <p class="font-bold text-lg">Historical</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl flex items-center gap-3 card-hover animate-float" style="animation-delay: 3s;">
+                        <div class="w-10 h-10 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-slate-400">Local Time</p>
+                            <p class="font-bold text-lg" id="local-time">--:--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: DESTINATIONS -->
+        <section id="destinations" class="page-section hidden container mx-auto px-4 py-8 animate-slide-up">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-white/10 pb-4">
+                <div>
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-2">Popular <span class="text-blue-400">Destinations</span></h2>
+                    <p class="text-slate-400">Iconic landmarks and spiritual centers.</p>
+                </div>
+                <div class="flex gap-2 mt-4 md:mt-0 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                    <button class="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-sm border border-white/5 active-category transition-colors">All</button>
+                    <button class="px-4 py-1.5 rounded-full bg-transparent hover:bg-white/10 text-sm border border-white/10 text-slate-400 transition-colors">Temples</button>
+                    <button class="px-4 py-1.5 rounded-full bg-transparent hover:bg-white/10 text-sm border border-white/10 text-slate-400 transition-colors">Nature</button>
+                    <button class="px-4 py-1.5 rounded-full bg-transparent hover:bg-white/10 text-sm border border-white/10 text-slate-400 transition-colors">History</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="destinations-grid"></div>
+        </section>
+
+        <!-- SECTION: STAYS & FOOD -->
+        <section id="hotels" class="page-section hidden container mx-auto px-4 py-8 animate-slide-up">
+            <h2 class="font-display text-3xl md:text-4xl font-bold mb-6">Stays & <span class="text-purple-400">Cuisine</span></h2>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-bed text-blue-400"></i> Top Rated Hotels</h3>
+                    <div class="flex flex-col gap-4" id="hotels-list"></div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-utensils text-purple-400"></i> Famous Local Food</h3>
+                    <div class="flex flex-col gap-4" id="food-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: UPDATES -->
+        <section id="updates" class="page-section hidden container mx-auto px-4 py-8 animate-slide-up">
+            <div class="text-center mb-10">
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-2">City <span class="text-sky-400">Pulse</span></h2>
+                <p class="text-slate-400">Live updates, events, and announcements powered by AI summarization.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="news-grid"></div>
+        </section>
+
+        <!-- SECTION: AI GUIDE -->
+        <section id="guide" class="page-section hidden container mx-auto px-4 h-[calc(100vh-80px)] animate-slide-up">
+            <div class="h-full flex flex-col glass-panel rounded-2xl overflow-hidden max-w-5xl mx-auto my-4">
+                
+                <div class="p-4 border-b border-white/10 bg-white/5 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center animate-pulse">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">CityIQ Smart Assistant</h3>
+                            <p class="text-xs text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span> Online • Powered by Gemini</p>
+                        </div>
+                    </div>
+                    <button onclick="clearChat()" class="text-xs text-slate-400 hover:text-white hover:underline">Clear Chat</button>
+                </div>
+
+                <div id="chat-messages" class="flex-grow overflow-y-auto p-6 space-y-4">
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex-shrink-0 flex items-center justify-center text-xs mt-1">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-2xl rounded-tl-none max-w-[85%]">
+                            <p class="text-sm">Hello {{ user.first_name }}! I'm your AI guide for Kolhapur. I can help you with:</p>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button onclick="quickAsk('Plan a 1-day trip to Kolhapur')" class="text-xs border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 transition">📅 1-Day Trip Plan</button>
+                                <button onclick="quickAsk('Best Misal Pav places?')" class="text-xs border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 transition">🌶️ Best Misal Pav</button>
+                                <button onclick="quickAsk('History of Mahalaxmi Temple')" class="text-xs border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 transition">🏛️ Temple History</button>
+                                <button onclick="quickAsk('How to get from Bus Stand to Rankala?')" class="text-xs border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 transition">🚌 Directions</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white/5 border-t border-white/10">
+                    <form onsubmit="handleChatSubmit(event)" class="relative">
+                        <input type="text" id="chat-input" placeholder="Ask about Kolhapur..." 
+                            class="w-full bg-slate-900/50 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-blue-500/50 transition-colors">
+                        <button type="submit" id="send-btn" class="absolute right-2 top-2 p-1.5 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-paper-plane text-sm"></i>
+                        </button>
+                    </form>
+                    <p class="text-[10px] text-slate-500 mt-2 text-center">AI can make mistakes. Check important info.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-8 bg-slate-900/50 mt-auto">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">© 2024 CityIQ Smart City Initiative. Powered by Google Gemini AI.</p>
+        </div>
+    </footer>
+
+    <script>
+        const destinations = [
+            {
+                id: 1, name: "Mahalaxmi Temple",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Mahalaxmi_Temple_Kolhapur.jpg/800px-Mahalaxmi_Temple_Kolhapur.jpg",
+                category: "Temples", desc: "One of the Shakti Peethas, this ancient temple is an architectural marvel and the spiritual heart of the city.",
+                location: "Bhavani Mandap"
+            },
+            {
+                id: 2, name: "Rankala Lake",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Rankala_Lake_Kolhapur.jpg/800px-Rankala_Lake_Kolhapur.jpg",
+                category: "Nature", desc: "A historic lake known for its scenic sunset views, boating, and the Shalini Palace on its banks.",
+                location: "Rankala"
+            },
+            {
+                id: 3, name: "New Palace",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/New_Palace_Kolhapur.jpg/800px-New_Palace_Kolhapur.jpg",
+                category: "History", desc: "A magnificent palace built in 1877-84, housing the Shahaji Chhatrapati Museum with royal artifacts.",
+                location: "Bhavani Mandap Road"
+            },
+            {
+                id: 4, name: "Panhala Fort",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Panhala_Fort_Entrance.jpg/800px-Panhala_Fort_Entrance.jpg",
+                category: "History", desc: "A massive hill fort located 20km from the city, pivotal in the history of the Maratha Empire.",
+                location: "Panhala (20km away)"
+            },
+            {
+                id: 5, name: "Jyotiba Temple",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Jyotiba_Temple.jpg/800px-Jyotiba_Temple.jpg",
+                category: "Temples", desc: "Dedicated to Jyotiba (Dattatreya), famous for the scattering of pink Gulal powder during festivals.",
+                location: "Wadi Ratnagiri"
+            },
+            {
+                id: 6, name: "Kaneri Math",
+                image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Kaneri_Math_Kolhapur.jpg",
+                category: "Culture", desc: "Home to the Siddhagiri Gramjivan Museum, showcasing rural village life through wax statues.",
+                location: "Kaneri"
+            }
+        ];
+
+        const hotels = [
+            { name: "Sayaji Hotel", rating: 4.8, type: "Luxury", price: "₹6,000+", area: "Kawala Naka" },
+            { name: "Hotel Panchshil", rating: 4.5, type: "Mid-range", price: "₹3,500+", area: "Shivaji Park" },
+            { name: "Hotel Opal", rating: 4.3, type: "Budget", price: "₹2,000+", area: "Near Bus Stand" }
+        ];
+
+        const food = [
+            { name: "Phadtare Misal", type: "Misal Pav", rating: 4.9, desc: "Iconic spicy Misal spot." },
+            { name: "Dehaati", type: "Mutton Thali", rating: 4.8, desc: "Authentic Kolhapuri Pandhra/Tambda Rassa." },
+            { name: "Rajabhau Bhel", type: "Street Food", rating: 4.7, desc: "Famous dry bhel near Khasbag." }
+        ];
+
+        const newsData = [
+            { title: "Rankala Lake Beautification Phase 2 Begins", date: "2 hours ago", tag: "Development",
+              content: "The municipal corporation has started the second phase of the promenade upgrade." },
+            { title: "Traffic Diversion at Shivaji Chowk", date: "5 hours ago", tag: "Traffic",
+              content: "Due to pipeline work, traffic is diverted via Gangavesh for the next 2 days." },
+            { title: "Heritage Festival Announced", date: "1 day ago", tag: "Events",
+              content: "The annual Kolhapur Art & Heritage festival will take place next weekend at New Palace grounds." }
+        ];
+
+        function init() {
+            renderDestinations();
+            renderHotels();
+            renderNews();
+            updateTime();
+            setInterval(updateTime, 1000);
+            loadChatHistory();
+            document.querySelectorAll('img').forEach(img => {
+                img.onerror = function() { this.src = 'https://placehold.co/600x400/1e293b/FFF?text=Image+Unavailable'; }
+            });
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('local-time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('data-target') === id) link.classList.add('active');
+            });
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('user-dropdown').classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('user-dropdown');
+            const button = event.target.closest('button');
+            if (!button || button.getAttribute('onclick') !== 'toggleUserMenu()') {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        function renderDestinations() {
+            document.getElementById('destinations-grid').innerHTML = destinations.map(dest => `
+                <div class="glass-panel rounded-xl overflow-hidden group card-hover">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${dest.image}" alt="${dest.name}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-xs px-2 py-1 rounded text-white border border-white/20">
+                            ${dest.category}
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-bold text-xl mb-1">${dest.name}</h3>
+                        <p class="text-xs text-blue-400 mb-3"><i class="fa-solid fa-location-dot"></i> ${dest.location}</p>
+                        <p class="text-sm text-slate-300 mb-4 line-clamp-2">${dest.desc}</p>
+                        <button onclick="askAboutDestination('${dest.name}')" class="w-full py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/50 transition-all flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-sparkles text-blue-400"></i> Ask AI More
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderHotels() {
+            document.getElementById('hotels-list').innerHTML = hotels.map(h => `
+                <div class="glass-panel p-4 rounded-xl flex justify-between items-center card-hover">
+                    <div>
+                        <h4 class="font-bold text-lg">${h.name}</h4>
+                        <div class="flex items-center gap-2 text-xs text-slate-400">
+                            <span class="text-blue-400 font-bold"><i class="fa-solid fa-star"></i> ${h.rating}</span>
+                            <span>•</span><span>${h.type}</span><span>•</span><span>${h.area}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-lg text-green-400">${h.price}</p>
+                        <button onclick="askAboutDestination('${h.name} Hotel')" class="text-xs text-blue-400 hover:text-white underline mt-1">Check Reviews</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('food-list').innerHTML = food.map(f => `
+                <div class="glass-panel p-4 rounded-xl flex justify-between items-center card-hover">
+                    <div>
+                        <h4 class="font-bold text-lg">${f.name}</h4>
+                        <p class="text-xs text-slate-400 italic">${f.desc}</p>
+                        <div class="flex items-center gap-2 text-xs text-slate-400 mt-1">
+                            <span class="text-purple-400"><i class="fa-solid fa-utensils"></i> ${f.type}</span>
+                            <span>•</span><span>${f.rating}/5</span>
+                        </div>
+                    </div>
+                    <button onclick="askAboutDestination('${f.name} ${f.type}')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-500 hover:text-white transition">
+                        <i class="fa-solid fa-arrow-right -rotate-45"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderNews() {
+            document.getElementById('news-grid').innerHTML = newsData.map((news, index) => `
+                <div class="glass-panel p-6 rounded-xl card-hover relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <i class="fa-regular fa-newspaper text-6xl"></i>
+                    </div>
+                    <span class="text-xs font-bold text-sky-400 uppercase tracking-wider border border-sky-500/30 px-2 py-0.5 rounded">${news.tag}</span>
+                    <h3 class="font-bold text-lg mt-3 mb-2 leading-tight">${news.title}</h3>
+                    <p class="text-sm text-slate-400 mb-4">${news.content}</p>
+                    <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock"></i> ${news.date}</span>
+                        <button onclick="summarizeNews(${index})" class="text-xs flex items-center gap-1 text-blue-400 hover:text-white transition">
+                            AI Summary <i class="fa-solid fa-bolt"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function loadChatHistory() {
+            try {
+                const response = await fetch('/api/chat-history/');
+                const data = await response.json();
+                // Optionally restore chat history in UI
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            }
+        }
+
+        function handleHeroEnter(e) {
+            if (e.key === 'Enter') heroSearch();
+        }
+
+        function heroSearch() {
+            const query = document.getElementById('hero-search').value;
+            if (!query) return;
+            showSection('guide');
+            addMessage(query, 'user');
+            fetchGeminiResponse(query);
+            document.getElementById('hero-search').value = '';
+        }
+
+        function askAboutDestination(name) {
+            showSection('guide');
+            const query = `Tell me interesting facts and visitor info about ${name} in Kolhapur.`;
+            addMessage(query, 'user');
+            fetchGeminiResponse(query);
+        }
+
+        function summarizeNews(index) {
+            showSection('guide');
+            const news = newsData[index];
+            const query = `Summarize this news update for a tourist in Kolhapur: "${news.title}: ${news.content}"`;
+            addMessage(`Summarize news: ${news.title}`, 'user');
+            fetchGeminiResponse(query);
+        }
+
+        function quickAsk(text) {
+            addMessage(text, 'user');
+            fetchGeminiResponse(text);
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            addMessage(text, 'user');
+            fetchGeminiResponse(text);
+            input.value = '';
+        }
+
+        function addMessage(text, sender) {
+            const chatBox = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            
+            if (sender === 'user') {
+                div.className = 'flex gap-4 flex-row-reverse animate-slide-up';
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-slate-700 flex-shrink-0 flex items-center justify-center text-xs mt-1">
+                        <i class="fa-solid fa-user text-white"></i>
+                    </div>
+                    <div class="bg-blue-600/20 border border-blue-500/20 p-3 rounded-2xl rounded-tr-none text-sm max-w-[85%]">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                div.className = 'flex gap-4 animate-slide-up';
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex-shrink-0 flex items-center justify-center text-xs mt-1">
+                        <i class="fa-solid fa-robot text-white"></i>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-2xl rounded-tl-none text-sm max-w-[85%] prose prose-invert prose-sm">
+                        ${marked.parse(text)}
+                    </div>
+                `;
+            }
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const chatBox = document.getElementById('chat-messages');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex gap-4 animate-slide-up';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex-shrink-0 flex items-center justify-center text-xs mt-1">
+                    <i class="fa-solid fa-robot text-white"></i>
+                </div>
+                <div class="bg-white/10 p-4 rounded-2xl rounded-tl-none text-sm flex items-center gap-2">
+                    <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
+                    <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                    <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+                </div>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return id;
+        }
+
+        async function fetchGeminiResponse(userPrompt) {
+            const typingId = showTypingIndicator();
+            const sendBtn = document.getElementById('send-btn');
+            sendBtn.disabled = true;
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch('/api/chat/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ prompt: userPrompt })
+                });
+
+                const data = await response.json();
+                document.getElementById(typingId).remove();
+
+                if (data.error) {
+                    addMessage("⚠️ AI Service Error: " + data.error, 'ai');
+                } else {
+                    addMessage(data.response, 'ai');
+                }
+            } catch (error) {
+                document.getElementById(typingId).remove();
+                addMessage("⚠️ Connection Error. Please check your internet.", 'ai');
+                console.error(error);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        async function clearChat() {
+            try {
+                const csrftoken = getCookie('csrftoken');
+                await fetch('/api/clear-chat/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
+                });
+                document.getElementById('chat-messages').innerHTML = '';
+                addMessage("Chat cleared. Ask me anything about Kolhapur!", 'ai');
+            } catch (error) {
+                console.error('Error clearing chat:', error);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
