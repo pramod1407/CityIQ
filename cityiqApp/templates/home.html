@@ -368,44 +368,58 @@
     </footer>
 
     <script>
+        const STATIC_URL = "{% get_static_prefix %}";
+
         const destinations = [
-            {
-                id: 1, name: "Mahalaxmi Temple",
-                image: "https://drive.google.com/file/d/1-FG7GCEHoMluxX-jCu17-9T6wKBBIWqH/",
-                category: "Temples", desc: "One of the Shakti Peethas, this ancient temple is an architectural marvel and the spiritual heart of the city.",
-                location: "Bhavani Mandap"
-            },
-            {
-                id: 2, name: "Rankala Lake",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Rankala_Lake_Kolhapur.jpg/800px-Rankala_Lake_Kolhapur.jpg",
-                category: "Nature", desc: "A historic lake known for its scenic sunset views, boating, and the Shalini Palace on its banks.",
-                location: "Rankala"
-            },
-            {
-                id: 3, name: "New Palace",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/New_Palace_Kolhapur.jpg/800px-New_Palace_Kolhapur.jpg",
-                category: "History", desc: "A magnificent palace built in 1877-84, housing the Shahaji Chhatrapati Museum with royal artifacts.",
-                location: "Bhavani Mandap Road"
-            },
-            {
-                id: 4, name: "Panhala Fort",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Panhala_Fort_Entrance.jpg/800px-Panhala_Fort_Entrance.jpg",
-                category: "History", desc: "A massive hill fort located 20km from the city, pivotal in the history of the Maratha Empire.",
-                location: "Panhala (20km away)"
-            },
-            {
-                id: 5, name: "Jyotiba Temple",
-                image: "https://drive.google.com/file/d/1D4Van5A5YwctONTPbRfPfjoZSfb4IXXU/",
-                category: "Temples", desc: "Dedicated to Jyotiba (Dattatreya), famous for the scattering of pink Gulal powder during festivals.",
-                location: "Wadi Ratnagiri"
-            },
-            {
-                id: 6, name: "Kaneri Math",
-                image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Kaneri_Math_Kolhapur.jpg",
-                category: "Culture", desc: "Home to the Siddhagiri Gramjivan Museum, showcasing rural village life through wax statues.",
-                location: "Kaneri"
-            }
-        ];
+    {
+        id: 1,
+        name: "Mahalaxmi Temple",
+        image: STATIC_URL + "imgs/Mahalaxmi_Temple,_Kolhapur.jpg",
+        category: "Temples",
+        desc: "One of the Shakti Peethas...",
+        location: "Bhavani Mandap"
+    },
+    {
+        id: 2,
+        name: "Rankala Lake",
+        image: STATIC_URL + "imgs/rankala.jpg",
+        category: "Nature",
+        desc: "Scenic sunset views...",
+        location: "Rankala"
+    },
+    {
+        id: 3,
+        name: "New Palace",
+        image: STATIC_URL + "imgs/Kolhapur_New_Palace.jpg",
+        category: "History",
+        desc: "Museum...",
+        location: "Bhavani Mandap Road"
+    },
+    {
+        id: 4,
+        name: "Panhala Fort",
+        image: STATIC_URL + "imgs/panhala-fort-kolhapur-maharashtra-3-attr-hero.jpg",
+        category: "History",
+        desc: "Fort...",
+        location: "Panhala"
+    },
+    {
+        id: 5,
+        name: "Jyotiba Temple",
+        image: STATIC_URL + "imgs/jyotiba-temple-kolhapur-maharashtra-1-attr-hero.jpg",
+        category: "Temples",
+        desc: "Temple...",
+        location: "Wadi Ratnagiri"
+    },
+    {
+        id: 6,
+        name: "Kaneri Math",
+        image: STATIC_URL + "imgs/kaneri.jpg",
+        category: "Culture",
+        desc: "Museum...",
+        location: "Kaneri"
+    }
+];
 
         const hotels = [
             { name: "Sayaji Hotel", rating: 4.8, type: "Luxury", price: "₹6,000+", area: "Kawala Naka" },
